@@ -1,0 +1,386 @@
+[
+    {
+        "id": "5a2417f0c7c60cc8",
+        "type": "subflow",
+        "name": "Subflow 12",
+        "info": "",
+        "category": "",
+        "in": [],
+        "out": [
+            {
+                "x": 2040,
+                "y": 220,
+                "wires": [
+                    {
+                        "id": "251a33a10dec253f",
+                        "port": 0
+                    }
+                ]
+            }
+        ],
+        "env": [
+            {
+                "name": "Domain Name",
+                "type": "str",
+                "value": ""
+            },
+            {
+                "name": "Healthy Dns Time Limit",
+                "type": "num",
+                "value": "200"
+            },
+            {
+                "name": "Unhealthy Dns Time Limit",
+                "type": "num",
+                "value": "400"
+            },
+            {
+                "name": "Healthy Response Time Limit",
+                "type": "num",
+                "value": "900"
+            },
+            {
+                "name": "Unhealthy Response Time Limit",
+                "type": "num",
+                "value": "2000"
+            }
+        ],
+        "meta": {},
+        "color": "#DDAA99"
+    },
+    {
+        "id": "2ec708d7bf7139e6",
+        "type": "dnsquery",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "domain_nameType": "env",
+        "domain_name": "Domain Name",
+        "record_typeType": "rectype",
+        "record_type": "ANY",
+        "dns_ip": "",
+        "x": 590,
+        "y": 340,
+        "wires": [
+            [
+                "414584f0381fb7b6"
+            ]
+        ]
+    },
+    {
+        "id": "c2d119ef282b98bc",
+        "type": "change",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "healthyDnsLimit",
+                "pt": "flow",
+                "to": "Healthy Dns Time Limit",
+                "tot": "env"
+            },
+            {
+                "t": "set",
+                "p": "unhealthyDnsLimit",
+                "pt": "flow",
+                "to": "Unhealthy Dns Time Limit",
+                "tot": "env"
+            },
+            {
+                "t": "set",
+                "p": "healthyResponseLimit",
+                "pt": "flow",
+                "to": "Healthy Response Time Limit",
+                "tot": "env"
+            },
+            {
+                "t": "set",
+                "p": "unhealthyResponseLimit",
+                "pt": "flow",
+                "to": "Unhealthy Response Time Limit",
+                "tot": "env"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 320,
+        "y": 180,
+        "wires": [
+            [
+                "2ec708d7bf7139e6",
+                "cce9418665fdcba3",
+                "9a9cf7cd1ec53002",
+                "6b9659c82c8b8d17"
+            ]
+        ]
+    },
+    {
+        "id": "99f4a1e93c3698aa",
+        "type": "inject",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "props": [
+            {
+                "p": "payload"
+            },
+            {
+                "p": "topic",
+                "vt": "str"
+            },
+            {
+                "p": "timestamp",
+                "v": "",
+                "vt": "date"
+            },
+            {
+                "p": "urlTime",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "dnsTime",
+                "v": "1",
+                "vt": "num"
+            },
+            {
+                "p": "urlOutputs",
+                "v": "true",
+                "vt": "bool"
+            },
+            {
+                "p": "dnsOutputs",
+                "v": "true",
+                "vt": "bool"
+            },
+            {
+                "p": "urlPoints",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "p": "dnsPoints",
+                "v": "0",
+                "vt": "num"
+            },
+            {
+                "p": "overallHealth",
+                "v": "0",
+                "vt": "num"
+            }
+        ],
+        "repeat": "5",
+        "crontab": "",
+        "once": false,
+        "onceDelay": 0.1,
+        "topic": "",
+        "payload": "http://vancouver.craigslist.org/search/sss?format=rss&query=cars",
+        "payloadType": "str",
+        "x": 110,
+        "y": 180,
+        "wires": [
+            [
+                "c2d119ef282b98bc"
+            ]
+        ]
+    },
+    {
+        "id": "cce9418665fdcba3",
+        "type": "change",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "rules": [
+            {
+                "t": "set",
+                "p": "url",
+                "pt": "msg",
+                "to": "payload",
+                "tot": "msg"
+            }
+        ],
+        "action": "",
+        "property": "",
+        "from": "",
+        "to": "",
+        "reg": false,
+        "x": 550,
+        "y": 80,
+        "wires": [
+            [
+                "59b551f1c5c752ca"
+            ]
+        ]
+    },
+    {
+        "id": "9a9cf7cd1ec53002",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "\nconst d = new Date();\n\n\n\n\nif(flow.get(\"time2\")){\n    \n    msg.urlTime = flow.get(\"time2\") - flow.get(\"time1\");\n\n    flow.set(\"time1\", 0);\n    flow.set(\"time2\", 0);\n    return msg;\n} else {\n    \n    flow.set(\"time1\", msg.timestamp);\n\n}\n",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 160,
+        "wires": [
+            [
+                "d8db8c2588f4e64b"
+            ]
+        ]
+    },
+    {
+        "id": "7483702afcb45faf",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "const d = new Date();\n\nflow.set(\"time2\", d.getTime());\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1020,
+        "y": 80,
+        "wires": [
+            [
+                "9a9cf7cd1ec53002"
+            ]
+        ]
+    },
+    {
+        "id": "59b551f1c5c752ca",
+        "type": "http request",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "method": "GET",
+        "ret": "txt",
+        "paytoqs": false,
+        "url": "",
+        "persist": false,
+        "authType": "",
+        "senderr": false,
+        "x": 810,
+        "y": 80,
+        "wires": [
+            [
+                "7483702afcb45faf"
+            ]
+        ]
+    },
+    {
+        "id": "414584f0381fb7b6",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "const d = new Date();\n\nflow.set(\"time4\", d.getTime());\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 880,
+        "y": 340,
+        "wires": [
+            [
+                "6b9659c82c8b8d17"
+            ]
+        ]
+    },
+    {
+        "id": "6b9659c82c8b8d17",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "\n\nconst d = new Date();\n\n\n\nif(flow.get(\"time4\")){\n\n    msg.dnsTime = flow.get(\"time4\") - flow.get(\"time3\");\n\n    flow.set(\"time3\", 0);\n    flow.set(\"time4\", 0);\n    return msg;\n    \n} else {\n    flow.set(\"time3\", msg.timestamp);\n}",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1200,
+        "y": 280,
+        "wires": [
+            [
+                "7ffe7575ea6b3220"
+            ]
+        ]
+    },
+    {
+        "id": "d8db8c2588f4e64b",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "\nconst sslPattern = /https/;\n\nif(msg.urlTime <= flow.get(\"healthyResponseLimit\")){\n    msg.urlPoints += 2;\n} else if (msg.urlTime <= flow.get(\"unhealthyResponseLimit\")){\n    msg.urlPoints += 1;\n}\n\n/*if(msg.url === msg.responseUrl){\n    msg.urlPoints += 1;\n} else {\n    msg.urlPoints = 0;\n}*/\n\nif(msg.statusCode === 200 && msg.responseUrl.match(sslPatern)) {\n    msg.urlPoints += 1;\n} else {\n    msg.urlPoints = 0;\n}\n\nflow.set(\"overallUrlHealth\", msg.urlPoints);\nmsg.urlPoints = 1;\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 160,
+        "wires": [
+            [
+                "9c092a5dcd783ea4"
+            ]
+        ]
+    },
+    {
+        "id": "7ffe7575ea6b3220",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "\n\nif(msg.dnsTime <= flow.get(\"healthyDnsLimit\")){\n    msg.dnsPoints += 2;\n} else if (msg.dnsTime <= flow.get(\"unhealthyDnsLimit\")){\n    msg.dnsPoints += 1;\n}\n\nif(msg.payload.ok){\n    msg.dnsPoints += 1;\n}\n\nflow.set(\"overallDnsHealth\", msg.dnsPoints);\nmsg.dnsPoints = 1;\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1420,
+        "y": 280,
+        "wires": [
+            [
+                "9c092a5dcd783ea4"
+            ]
+        ]
+    },
+    {
+        "id": "9c092a5dcd783ea4",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "\nif(!msg.urlPoints){\n    msg.overallHealth += flow.get(\"overallDnsHealth\");\n    return;\n} else if(!msg.dnsPoints){\n    msg.overallHealth += flow.get(\"overallUrlHealth\");\n}\n\n\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1640,
+        "y": 220,
+        "wires": [
+            [
+                "251a33a10dec253f"
+            ]
+        ]
+    },
+    {
+        "id": "251a33a10dec253f",
+        "type": "function",
+        "z": "5a2417f0c7c60cc8",
+        "name": "",
+        "func": "\nif(msg.overallHealth >= 4){\n    msg.payload = \"Healthy\";\n} else if (msg.overallHealth >= 2){\n    msg.payload = \"Facing Issues!\"\n} else {\n    msg.payload = \"UNHEALTHY!!!\"\n}\n\nreturn msg;",
+        "outputs": 1,
+        "noerr": 0,
+        "initialize": "",
+        "finalize": "",
+        "libs": [],
+        "x": 1840,
+        "y": 220,
+        "wires": [
+            []
+        ]
+    }
+]
